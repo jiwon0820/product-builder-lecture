@@ -207,3 +207,33 @@ window.addEventListener('click', (e) => {
         modal.style.display = 'none';
     }
 });
+
+// --- Disqus Count Formatter --- //
+const formatDisqusCount = () => {
+    const countElements = document.querySelectorAll('.disqus-comment-count');
+    const lang = document.documentElement.lang;
+
+    countElements.forEach(el => {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    const text = el.textContent;
+                    // 숫자만 추출
+                    const count = text.replace(/[^0-9]/g, '');
+                    
+                    if (count === '' || isNaN(count)) {
+                        el.textContent = lang === 'en' ? '0 Comments' : '댓글 0건';
+                    } else {
+                        el.textContent = lang === 'en' ? `${count} Comments` : `댓글 ${count}건`;
+                    }
+                    // 변경 후 감지 중지 (무한 루프 방지)
+                    observer.disconnect();
+                }
+            });
+        });
+
+        observer.observe(el, { childList: true });
+    });
+};
+
+formatDisqusCount();
