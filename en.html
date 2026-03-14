@@ -16,14 +16,30 @@
         <button id="theme-toggle-btn">Dark Mode</button>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <h1>🍴 What's for Dinner?</h1>
+    <div class="main-content">
+        <div class="container">
+            <div class="header">
+                <h1>🍴 What's for Dinner?</h1>
+            </div>
+            <div id="menu-display-area">
+                <menu-recommendation></menu-recommendation>
+            </div>
+            <button id="generate-btn">Recommend me a menu!</button>
         </div>
-        <div id="menu-display-area">
-            <menu-recommendation></menu-recommendation>
+
+        <!-- Disqus Comment Section -->
+        <div class="comments-section">
+            <div id="disqus_thread"></div>
+            <script>
+                (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://productbuilder-db7cem8yte.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         </div>
-        <button id="generate-btn">Recommend me a menu!</button>
     </div>
 
     <!-- Partnership Inquiry Modal -->
