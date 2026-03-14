@@ -5,14 +5,6 @@ class LottoNumbers extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = `
             <style>
-                :host {
-                    --number-bg-light: linear-gradient(145deg, #e6e6e6, #ffffff);
-                    --number-bg-dark: linear-gradient(145deg, #1e1e3b, #2a2a4a);
-                    --number-shadow-light: 5px 5px 10px #d4d4d4, -5px -5px 10px #ffffff;
-                    --number-shadow-dark: 5px 5px 10px #15152a, -5px -5px 10px #2f2f55;
-                    --number-color-light: #3498db;
-                    --number-color-dark: #e94560;
-                }
                 .lotto-numbers-container {
                     display: flex;
                     justify-content: center;
@@ -26,21 +18,22 @@ class LottoNumbers extends HTMLElement {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    font-size: 1.6rem;
+                    font-size: 1.4rem;
                     font-weight: 700;
-                    transition: all 0.3s ease;
+                    color: white;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+                    box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2), 3px 3px 10px rgba(0,0,0,0.2);
+                    transition: transform 0.3s ease, background 0.3s ease;
                 }
-                body.dark-mode .lotto-number {
-                    background: var(--number-bg-dark);
-                    box-shadow: var(--number-shadow-dark);
-                    color: var(--number-color-dark);
-                } 
-                body:not(.dark-mode) .lotto-number {
-                     background: var(--number-bg-light);
-                    box-shadow: var(--number-shadow-light);
-                    color: var(--number-color-light);
+                .lotto-number:hover {
+                    transform: scale(1.1);
                 }
-
+                /* 공 색상 정의 */
+                .ball-1-10 { background: radial-gradient(circle at 30% 30%, #fbc531, #e1b12c); }
+                .ball-11-20 { background: radial-gradient(circle at 30% 30%, #487eb0, #40739e); }
+                .ball-21-30 { background: radial-gradient(circle at 30% 30%, #e84118, #c23616); }
+                .ball-31-40 { background: radial-gradient(circle at 30% 30%, #7f8c8d, #718093); }
+                .ball-41-45 { background: radial-gradient(circle at 30% 30%, #4cd137, #44bd32); }
             </style>
             <div class="lotto-numbers-container">
                 <div class="lotto-number"></div>
@@ -57,7 +50,16 @@ class LottoNumbers extends HTMLElement {
         const numberElements = this.shadowRoot.querySelectorAll('.lotto-number');
         if (numbers && numbers.length === 6) {
             numberElements.forEach((element, index) => {
-                element.textContent = numbers[index];
+                const num = numbers[index];
+                element.textContent = num;
+                
+                // 기존 클래스 제거 후 숫자에 맞는 클래스 추가
+                element.className = 'lotto-number';
+                if (num <= 10) element.classList.add('ball-1-10');
+                else if (num <= 20) element.classList.add('ball-11-20');
+                else if (num <= 30) element.classList.add('ball-21-30');
+                else if (num <= 40) element.classList.add('ball-31-40');
+                else element.classList.add('ball-41-45');
             });
         }
     }
