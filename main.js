@@ -26,6 +26,8 @@ class MenuRecommendation extends HTMLElement {
                     transform: translateY(20px);
                     opacity: 0;
                     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    max-width: 350px;
+                    width: 100%;
                 }
                 .menu-card.active {
                     transform: translateY(0);
@@ -35,6 +37,18 @@ class MenuRecommendation extends HTMLElement {
                     font-size: 4rem;
                     margin-bottom: 15px;
                     display: block;
+                }
+                .menu-image {
+                    width: 100%;
+                    max-width: 250px;
+                    height: auto;
+                    border-radius: 15px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                    display: none;
+                }
+                .menu-image.visible {
+                    display: inline-block;
                 }
                 .menu-name {
                     font-size: 2.2rem;
@@ -61,6 +75,7 @@ class MenuRecommendation extends HTMLElement {
             </style>
             <div class="menu-container">
                 <div id="card" class="menu-card active">
+                    <img id="image" class="menu-image" alt="menu image">
                     <span id="emoji" class="menu-emoji">🍽️</span>
                     <div id="name" class="menu-name">${defaultTitle}</div>
                     <div id="desc" class="menu-desc">${defaultDesc}</div>
@@ -72,13 +87,23 @@ class MenuRecommendation extends HTMLElement {
     set menu(menuData) {
         const card = this.shadowRoot.getElementById('card');
         const emoji = this.shadowRoot.getElementById('emoji');
+        const image = this.shadowRoot.getElementById('image');
         const name = this.shadowRoot.getElementById('name');
         const desc = this.shadowRoot.getElementById('desc');
 
         card.classList.remove('active');
         
         setTimeout(() => {
-            emoji.textContent = menuData.emoji;
+            if (menuData.image) {
+                image.src = menuData.image;
+                image.classList.add('visible');
+                emoji.style.display = 'none';
+            } else {
+                image.classList.remove('visible');
+                emoji.style.display = 'block';
+                emoji.textContent = menuData.emoji;
+            }
+            
             name.textContent = menuData.name;
             desc.textContent = menuData.desc;
             card.classList.add('active');
@@ -92,7 +117,7 @@ customElements.define('menu-recommendation', MenuRecommendation);
 const menus = {
     ko: [
         { name: '김치찌개', emoji: '🥘', desc: '얼큰하고 뜨끈한 한국인의 소울푸드' },
-        { name: '삼겹살', emoji: '🥓', desc: '오늘 하루 수고한 당신에게 주는 보상' },
+        { name: '삼겹살', emoji: '🥓', desc: '오늘 하루 수고한 당신에게 주는 보상', image: '삼겹살짤.jpg' },
         { name: '치킨', emoji: '🍗', desc: '오늘 저녁은 치맥 어때요?' },
         { name: '초밥', emoji: '🍣', desc: '깔끔하고 신선한 한 끼' },
         { name: '스테이크', emoji: '🥩', desc: '분위기 내고 싶은 오늘 추천드려요' },
@@ -106,7 +131,7 @@ const menus = {
     ],
     en: [
         { name: 'Kimchi Stew', emoji: '🥘', desc: 'Spicy and comforting Korean soul food' },
-        { name: 'K-BBQ', emoji: '🥓', desc: 'The ultimate reward after a long day' },
+        { name: 'K-BBQ', emoji: '🥓', desc: 'The ultimate reward after a long day', image: '삼겹살짤.jpg' },
         { name: 'Fried Chicken', emoji: '🍗', desc: 'How about some chicken and beer tonight?' },
         { name: 'Sushi', emoji: '🍣', desc: 'A clean and fresh meal for a light evening' },
         { name: 'Steak', emoji: '🥩', desc: 'Perfect for a fancy and special dinner' },
