@@ -169,9 +169,50 @@ themeToggleBtn.addEventListener('click', () => {
     updateTheme(!currentIsDarkMode);
 });
 
-// --- Menu Recommender Logic --- //
-const generateBtn = document.getElementById('generate-btn');
+// --- Menu Grid Generation & Selection Logic --- //
+const menuGrid = document.getElementById('menu-grid');
 const menuRecommendationElement = document.querySelector('menu-recommendation');
+let selectedMenuItem = null;
+
+function renderMenuGrid() {
+    const currentMenus = menus[lang] || menus.ko;
+    menuGrid.innerHTML = '';
+    
+    currentMenus.forEach((menu, index) => {
+        const item = document.createElement('div');
+        item.className = 'menu-item';
+        item.innerHTML = `<span>${menu.emoji}</span><p>${menu.name}</p>`;
+        
+        item.addEventListener('click', () => {
+            // 이미 선택된 것을 또 누르면 해제
+            if (selectedMenuItem === item) {
+                item.classList.remove('selected');
+                selectedMenuItem = null;
+                // 초기 상태로 복구 (또는 그냥 둠)
+                return;
+            }
+
+            // 기존 선택 해제 (단일 선택)
+            if (selectedMenuItem) {
+                selectedMenuItem.classList.remove('selected');
+            }
+
+            // 새로운 선택
+            item.classList.add('selected');
+            selectedMenuItem = item;
+            
+            // 추천 카드 업데이트
+            menuRecommendationElement.menu = menu;
+        });
+        
+        menuGrid.appendChild(item);
+    });
+}
+
+renderMenuGrid();
+
+// --- Random Recommender Logic --- //
+const generateBtn = document.getElementById('generate-btn');
 
 function getRandomMenu() {
     const currentMenus = menus[lang] || menus.ko;
@@ -180,6 +221,12 @@ function getRandomMenu() {
 }
 
 generateBtn.addEventListener('click', () => {
+    // 랜덤 추천 시 기존 선택된 그리드 아이템 해제
+    if (selectedMenuItem) {
+        selectedMenuItem.classList.remove('selected');
+        selectedMenuItem = null;
+    }
+    
     const selectedMenu = getRandomMenu();
     menuRecommendationElement.menu = selectedMenu;
 });
@@ -214,7 +261,6 @@ const formatDisqusCount = () => {
     const lang = document.documentElement.lang;
 
     countElements.forEach(el => {
-        // 초기에는 부모 제목을 숨김
         const titleEl = el.closest('.comments-title');
         if (titleEl) titleEl.style.opacity = '0';
 
@@ -224,10 +270,8 @@ const formatDisqusCount = () => {
                     const text = el.textContent.trim();
                     if (!text) return;
 
-                    // 숫자만 추출
                     let count = text.replace(/[^0-9]/g, '');
                     
-                    // "한 건" 또는 "1 Comment" 등 단수형 처리
                     if ((count === '' || count === '1') && (text.includes('한') || text.toLowerCase().includes('comment'))) {
                         count = '1';
                     }
@@ -238,7 +282,6 @@ const formatDisqusCount = () => {
                         el.textContent = lang === 'en' ? `${count} ${count === '1' ? 'Comment' : 'Comments'}` : `댓글 ${count}건`;
                     }
                     
-                    // 변환 완료 후 제목 표시 및 관찰 중지
                     if (titleEl) titleEl.style.opacity = '1';
                     observer.disconnect();
                 }
