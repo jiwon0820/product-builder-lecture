@@ -214,19 +214,32 @@ const formatDisqusCount = () => {
     const lang = document.documentElement.lang;
 
     countElements.forEach(el => {
+        // 초기에는 부모 제목을 숨김
+        const titleEl = el.closest('.comments-title');
+        if (titleEl) titleEl.style.opacity = '0';
+
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'childList') {
-                    const text = el.textContent;
+                    const text = el.textContent.trim();
+                    if (!text) return;
+
                     // 숫자만 추출
-                    const count = text.replace(/[^0-9]/g, '');
+                    let count = text.replace(/[^0-9]/g, '');
+                    
+                    // "한 건" 또는 "1 Comment" 등 단수형 처리
+                    if ((count === '' || count === '1') && (text.includes('한') || text.toLowerCase().includes('comment'))) {
+                        count = '1';
+                    }
                     
                     if (count === '' || isNaN(count)) {
                         el.textContent = lang === 'en' ? '0 Comments' : '댓글 0건';
                     } else {
-                        el.textContent = lang === 'en' ? `${count} Comments` : `댓글 ${count}건`;
+                        el.textContent = lang === 'en' ? `${count} ${count === '1' ? 'Comment' : 'Comments'}` : `댓글 ${count}건`;
                     }
-                    // 변경 후 감지 중지 (무한 루프 방지)
+                    
+                    // 변환 완료 후 제목 표시 및 관찰 중지
+                    if (titleEl) titleEl.style.opacity = '1';
                     observer.disconnect();
                 }
             });

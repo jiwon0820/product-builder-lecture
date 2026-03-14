@@ -230,4 +230,5 @@ h1 {
     text-align: left;
     border-bottom: 2px solid var(--primary-color);
     padding-bottom: 10px;
+    transition: opacity 0.3s ease; /* 부드럽게 나타나도록 추가 */
 }
