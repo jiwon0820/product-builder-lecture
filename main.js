@@ -183,3 +183,27 @@ generateBtn.addEventListener('click', () => {
     const selectedMenu = getRandomMenu();
     menuRecommendationElement.menu = selectedMenu;
 });
+
+// --- Partnership Modal Logic --- //
+const modal = document.getElementById('partnership-modal');
+const partnershipBtn = document.getElementById('partnership-btn');
+const closeBtn = document.querySelector('.close-btn');
+
+if (partnershipBtn) {
+    partnershipBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.style.display = 'flex';
+    });
+}
+
+if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+}
+
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+});
