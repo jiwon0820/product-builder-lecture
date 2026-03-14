@@ -1,1 +1,116 @@
-/* Add styles here */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+    --light-bg: #f0f2f5;
+    --light-glass: rgba(255, 255, 255, 0.5);
+    --light-text: #2c3e50;
+    --light-primary: #3498db;
+    --light-primary-hover: #2980b9;
+    --light-header: #34495e;
+    --light-shadow: rgba(0, 0, 0, 0.1);
+
+    --dark-bg: #1a1a2e;
+    --dark-glass: rgba(26, 26, 46, 0.7);
+    --dark-text: #e0e0e0;
+    --dark-primary: #e94560;
+    --dark-primary-hover: #c7344e;
+    --dark-header: #f0f2f5;
+    --dark-shadow: rgba(0, 0, 0, 0.3);
+
+    --background-color: var(--light-bg);
+    --glass-color: var(--light-glass);
+    --text-color: var(--light-text);
+    --primary-color: var(--light-primary);
+    --primary-hover-color: var(--light-primary-hover);
+    --header-color: var(--light-header);
+    --shadow-color: var(--light-shadow);
+}
+
+.dark-mode {
+    --background-color: var(--dark-bg);
+    --glass-color: var(--dark-glass);
+    --text-color: var(--dark-text);
+    --primary-color: var(--dark-primary);
+    --primary-hover-color: var(--dark-primary-hover);
+    --header-color: var(--dark-header);
+    --shadow-color: var(--dark-shadow);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.container {
+    width: 90%;
+    max-width: 400px;
+    background: var(--glass-color);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: var(--header-color);
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+#theme-toggle-btn {
+    background-color: transparent;
+    color: var(--header-color);
+    border: 2px solid var(--header-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#theme-toggle-btn:hover {
+    background-color: var(--header-color);
+    color: var(--background-color);
+}
+
+#generate-btn {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-hover-color));
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+#generate-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+lotto-numbers {
+    display: block;
+    margin: 40px 0;
+}
