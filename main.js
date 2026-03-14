@@ -3,6 +3,10 @@ class MenuRecommendation extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+        const lang = document.documentElement.lang;
+        const defaultTitle = lang === 'en' ? 'Shall I recommend a menu?' : '메뉴를 추천해드릴까요?';
+        const defaultDesc = lang === 'en' ? 'Click the button!' : '버튼을 눌러보세요!';
+
         this.shadowRoot.innerHTML = `
             <style>
                 .menu-container {
@@ -33,14 +37,16 @@ class MenuRecommendation extends HTMLElement {
                     display: block;
                 }
                 .menu-name {
-                    font-size: 2.5rem;
+                    font-size: 2.2rem;
                     font-weight: 700;
                     color: #ff4757;
                     margin-bottom: 10px;
+                    word-break: keep-all;
                 }
                 .menu-desc {
                     color: #747d8c;
                     font-size: 1.1rem;
+                    word-break: keep-all;
                 }
                 :host-context(.dark-mode) .menu-card {
                     background: #2f3542;
@@ -54,10 +60,10 @@ class MenuRecommendation extends HTMLElement {
                 }
             </style>
             <div class="menu-container">
-                <div id="card" class="menu-card">
+                <div id="card" class="menu-card active">
                     <span id="emoji" class="menu-emoji">🍽️</span>
-                    <div id="name" class="menu-name">메뉴를 추천해드릴까요?</div>
-                    <div id="desc" class="menu-desc">버튼을 눌러보세요!</div>
+                    <div id="name" class="menu-name">${defaultTitle}</div>
+                    <div id="desc" class="menu-desc">${defaultDesc}</div>
                 </div>
             </div>
         `;
@@ -82,29 +88,50 @@ class MenuRecommendation extends HTMLElement {
 
 customElements.define('menu-recommendation', MenuRecommendation);
 
-// --- 메뉴 리스트 --- //
-const menuList = [
-    { name: '김치찌개', emoji: '🥘', desc: '얼큰하고 뜨끈한 한국인의 소울푸드' },
-    { name: '삼겹살', emoji: '🥓', desc: '오늘 하루 수고한 당신에게 주는 보상' },
-    { name: '치킨', emoji: '🍗', desc: '오늘 저녁은 치맥 어때요?' },
-    { name: '초밥', emoji: '🍣', desc: '깔끔하고 신선한 한 끼' },
-    { name: '스테이크', emoji: '🥩', desc: '분위기 내고 싶은 오늘 추천드려요' },
-    { name: '마라탕', emoji: '🍜', desc: '스트레스 풀리는 알싸한 매운맛' },
-    { name: '햄버거', emoji: '🍔', desc: '빠르고 든든하게 즐기는 한 끼' },
-    { name: '파스타', emoji: '🍝', desc: '로맨틱하고 맛있는 이탈리안 스타일' },
-    { name: '돈가스', emoji: '🍱', desc: '바삭바삭한 식감이 일품인 메뉴' },
-    { name: '피자', emoji: '🍕', desc: '친구들과 가족들과 함께 즐기기 좋아요' },
-    { name: '떡볶이', emoji: '🍡', desc: '매콤달콤 국민 간식 겸 식사' },
-    { name: '제육볶음', emoji: '🍛', desc: '밥 한 공기 뚝딱할 수 있는 밥도둑' }
-];
+// --- 메뉴 리스트 (KO & EN) --- //
+const menus = {
+    ko: [
+        { name: '김치찌개', emoji: '🥘', desc: '얼큰하고 뜨끈한 한국인의 소울푸드' },
+        { name: '삼겹살', emoji: '🥓', desc: '오늘 하루 수고한 당신에게 주는 보상' },
+        { name: '치킨', emoji: '🍗', desc: '오늘 저녁은 치맥 어때요?' },
+        { name: '초밥', emoji: '🍣', desc: '깔끔하고 신선한 한 끼' },
+        { name: '스테이크', emoji: '🥩', desc: '분위기 내고 싶은 오늘 추천드려요' },
+        { name: '마라탕', emoji: '🍜', desc: '스트레스 풀리는 알싸한 매운맛' },
+        { name: '햄버거', emoji: '🍔', desc: '빠르고 든든하게 즐기는 한 끼' },
+        { name: '파스타', emoji: '🍝', desc: '로맨틱하고 맛있는 이탈리안 스타일' },
+        { name: '돈가스', emoji: '🍱', desc: '바삭바삭한 식감이 일품인 메뉴' },
+        { name: '피자', emoji: '🍕', desc: '친구들과 가족들과 함께 즐기기 좋아요' },
+        { name: '떡볶이', emoji: '🍡', desc: '매콤달콤 국민 간식 겸 식사' },
+        { name: '제육볶음', emoji: '🍛', desc: '밥 한 공기 뚝딱할 수 있는 밥도둑' }
+    ],
+    en: [
+        { name: 'Kimchi Stew', emoji: '🥘', desc: 'Spicy and comforting Korean soul food' },
+        { name: 'K-BBQ', emoji: '🥓', desc: 'The ultimate reward after a long day' },
+        { name: 'Fried Chicken', emoji: '🍗', desc: 'How about some chicken and beer tonight?' },
+        { name: 'Sushi', emoji: '🍣', desc: 'A clean and fresh meal for a light evening' },
+        { name: 'Steak', emoji: '🥩', desc: 'Perfect for a fancy and special dinner' },
+        { name: 'Malatang', emoji: '🍜', desc: 'Spicy and numbing flavors to relieve stress' },
+        { name: 'Hamburger', emoji: '🍔', desc: 'A quick and satisfying classic meal' },
+        { name: 'Pasta', emoji: '🍝', desc: 'Romantic and delicious Italian style' },
+        { name: 'Tonkatsu', emoji: '🍱', desc: 'Crunchy and crispy pork cutlet' },
+        { name: 'Pizza', emoji: '🍕', desc: 'Great to share with friends and family' },
+        { name: 'Tteokbokki', emoji: '🍡', desc: 'Korea\'s favorite sweet and spicy snack' },
+        { name: 'Bulgogi', emoji: '🍛', desc: 'Sweet and savory marinated beef' }
+    ]
+};
 
 // --- Theme Toggle --- //
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 const body = document.body;
+const lang = document.documentElement.lang;
 
 function updateTheme(isDarkMode) {
     body.classList.toggle('dark-mode', isDarkMode);
-    themeToggleBtn.textContent = isDarkMode ? '라이트 모드' : '다크 모드';
+    if (lang === 'en') {
+        themeToggleBtn.textContent = isDarkMode ? 'Light Mode' : 'Dark Mode';
+    } else {
+        themeToggleBtn.textContent = isDarkMode ? '라이트 모드' : '다크 모드';
+    }
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
 }
 
@@ -122,8 +149,9 @@ const generateBtn = document.getElementById('generate-btn');
 const menuRecommendationElement = document.querySelector('menu-recommendation');
 
 function getRandomMenu() {
-    const randomIndex = Math.floor(Math.random() * menuList.length);
-    return menuList[randomIndex];
+    const currentMenus = menus[lang] || menus.ko;
+    const randomIndex = Math.floor(Math.random() * currentMenus.length);
+    return currentMenus[randomIndex];
 }
 
 generateBtn.addEventListener('click', () => {
