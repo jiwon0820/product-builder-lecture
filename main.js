@@ -169,50 +169,9 @@ themeToggleBtn.addEventListener('click', () => {
     updateTheme(!currentIsDarkMode);
 });
 
-// --- Menu Grid Generation & Selection Logic --- //
-const menuGrid = document.getElementById('menu-grid');
-const menuRecommendationElement = document.querySelector('menu-recommendation');
-let selectedMenuItem = null;
-
-function renderMenuGrid() {
-    const currentMenus = menus[lang] || menus.ko;
-    menuGrid.innerHTML = '';
-    
-    currentMenus.forEach((menu, index) => {
-        const item = document.createElement('div');
-        item.className = 'menu-item';
-        item.innerHTML = `<span>${menu.emoji}</span><p>${menu.name}</p>`;
-        
-        item.addEventListener('click', () => {
-            // 이미 선택된 것을 또 누르면 해제
-            if (selectedMenuItem === item) {
-                item.classList.remove('selected');
-                selectedMenuItem = null;
-                // 초기 상태로 복구 (또는 그냥 둠)
-                return;
-            }
-
-            // 기존 선택 해제 (단일 선택)
-            if (selectedMenuItem) {
-                selectedMenuItem.classList.remove('selected');
-            }
-
-            // 새로운 선택
-            item.classList.add('selected');
-            selectedMenuItem = item;
-            
-            // 추천 카드 업데이트
-            menuRecommendationElement.menu = menu;
-        });
-        
-        menuGrid.appendChild(item);
-    });
-}
-
-renderMenuGrid();
-
 // --- Random Recommender Logic --- //
 const generateBtn = document.getElementById('generate-btn');
+const menuRecommendationElement = document.querySelector('menu-recommendation');
 
 function getRandomMenu() {
     const currentMenus = menus[lang] || menus.ko;
@@ -221,12 +180,6 @@ function getRandomMenu() {
 }
 
 generateBtn.addEventListener('click', () => {
-    // 랜덤 추천 시 기존 선택된 그리드 아이템 해제
-    if (selectedMenuItem) {
-        selectedMenuItem.classList.remove('selected');
-        selectedMenuItem = null;
-    }
-    
     const selectedMenu = getRandomMenu();
     menuRecommendationElement.menu = selectedMenu;
 });
