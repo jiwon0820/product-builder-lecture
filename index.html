@@ -1,23 +1,24 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>오늘 뭐 먹지? - 저녁 메뉴 추천</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Lotto Pro</h1>
-            <button id="theme-toggle-btn">Dark Mode</button>
+            <h1>🍴 오늘 뭐 먹지?</h1>
+            <button id="theme-toggle-btn">다크 모드</button>
         </div>
-        <lotto-numbers></lotto-numbers>
-        <button id="generate-btn">Generate Numbers</button>
+        <div id="menu-display-area">
+            <menu-recommendation></menu-recommendation>
+        </div>
+        <button id="generate-btn">메뉴 추천받기!</button>
     </div>
     <script src="main.js"></script>
 </body>
