@@ -1,20 +1,21 @@
-# 동물상 테스트 (Animal Face Test) - Blueprint
+# 동물상 테스트 (Animal Face Test) - Blueprint (v2.0)
 
 ## 개요
-이 애플리케이션은 Google Teachable Machine의 이미지 분류 모델을 사용하여 사용자의 얼굴이 어떤 동물(강아지, 고양이 등)과 닮았는지 분석해주는 웹 서비스입니다.
+- **기능:** 이미지 파일을 업로드하여 AI(Teachable Machine)가 강아지상/고양이상 여부를 판별.
+- **디자인 컨셉:** 미니멀리즘, 민트 그린 포인트, 부드러운 그림자, 다크 모드 지원.
 
-## 상세 기능 및 디자인
-- **현대적인 UI:** OKLCH 컬러 스페이스와 미세한 노이즈 텍스처를 활용한 프리미엄 디자인.
-- **실시간 분석:** 웹캠을 통한 실시간 AI 분석 및 결과 시각화.
-- **반응형 레이아웃:** 모바일과 데스크톱 모두에 최적화된 인터페이스.
-- **애니메이션:** 부드러운 전환 효과와 인터랙티브한 버튼 피드백.
+## 상세 디자인 (UI/UX)
+- **레이아웃:** 화면 중앙에 부드러운 그림자가 있는 화이트/다크 카드 배치.
+- **포인트 컬러:** 민트 그린 (`oklch(0.8 0.1 160)` 계열).
+- **입력 방식:** 파일 선택기(Input type="file") 및 드롭존 형태의 원형 프리뷰 영역.
+- **다크 모드:** 우측 상단 토글 버튼을 통한 테마 전환.
 
-## 프로젝트 구조
-- `index.html`: 메인 구조 및 SDK 로드.
-- `style.css`: 현대적 CSS 기능을 활용한 스타일링.
-- `main.js`: Teachable Machine 로직 및 UI 제어.
+## 기술 스택
+- **HTML5:** Semantic Markup, File API.
+- **CSS3:** Modern CSS (OKLCH, CSS Variables, Transistions).
+- **JS:** Teachable Machine Image SDK, Async/Await.
 
-## 현재 작업 단계: 초기 구현
-1.  기본 HTML 구조 설계 (index.html).
-2.  프리미엄 스타일 적용 (style.css).
-3.  Teachable Machine 모델 통합 및 웹캠 로직 구현 (main.js).
+## 현재 작업 단계: v2.0 개편
+1.  HTML 구조 변경 (파일 업로드 및 다크 모드 토글 추가).
+2.  CSS 스타일 전면 수정 (민트 그린 테마 및 다크 모드 구현).
+3.  JavaScript 로직 변경 (Webcam 제거 -> Image File 처리 로직 도입).

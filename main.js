@@ -1,78 +1,87 @@
-// Teachable Machine Model URL
 const URL = "https://teachablemachine.withgoogle.com/models/Rx1SjZ6vJ/";
 
-let model, webcam, labelContainer, maxPredictions;
+let model, labelContainer, maxPredictions;
 
-// Initialize the model and webcam
-async function init() {
-    const startBtn = document.getElementById("start-btn");
-    startBtn.disabled = true;
-    startBtn.querySelector(".btn-text").textContent = "모델 로딩 중...";
-
+// 1. 모델 로드
+async function loadModel() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
+}
 
-    try {
-        // Load the model and metadata
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+// 2. 파일 업로드 및 프리뷰 처리
+const imageUpload = document.getElementById('image-upload');
+const imagePreview = document.getElementById('preview-image');
+const uploadLabel = document.getElementById('upload-label');
+const previewArea = document.getElementById('image-preview-area');
 
-        // Setup webcam
-        const flip = true; 
-        webcam = new tmImage.Webcam(400, 400, flip); 
-        await webcam.setup(); 
-        await webcam.play();
-        window.requestAnimationFrame(loop);
+previewArea.addEventListener('click', () => imageUpload.click());
 
-        // Update UI
-        const container = document.getElementById("webcam-container");
-        container.innerHTML = ""; // Remove placeholder
-        container.appendChild(webcam.canvas);
-
-        labelContainer = document.getElementById("label-container");
-        labelContainer.innerHTML = ""; // Clear
-        for (let i = 0; i < maxPredictions; i++) {
-            const resultItem = document.createElement("div");
-            resultItem.classList.add("result-item");
-            resultItem.innerHTML = `
-                <span class="class-name"></span>
-                <div class="result-bar-bg">
-                    <div class="result-bar-fill"></div>
-                </div>
-                <span class="probability"></span>
-            `;
-            labelContainer.appendChild(resultItem);
-        }
-
-        startBtn.style.display = "none"; // Hide button after start
-
-    } catch (error) {
-        console.error("Initialization failed:", error);
-        alert("카메라 권한이 필요하거나 모델을 불러오는 데 실패했습니다.");
-        startBtn.disabled = false;
-        startBtn.querySelector(".btn-text").textContent = "다시 시도하기";
+imageUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            imagePreview.src = event.target.result;
+            imagePreview.style.display = 'block';
+            uploadLabel.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
     }
-}
+});
 
-async function loop() {
-    webcam.update(); 
-    await predict();
-    window.requestAnimationFrame(loop);
-}
-
-// Predict using the webcam frame
+// 3. 예측 실행
 async function predict() {
-    const prediction = await model.predict(webcam.canvas);
+    if (!imagePreview.src || imagePreview.style.display === 'none') {
+        alert("사진을 먼저 업로드해주세요!");
+        return;
+    }
+
+    const startBtn = document.getElementById('start-btn');
+    startBtn.disabled = true;
+    startBtn.textContent = "분석 중...";
+
+    if (!model) await loadModel();
+
+    const prediction = await model.predict(imagePreview);
+    
+    labelContainer = document.getElementById("label-container");
+    labelContainer.innerHTML = "";
+
     for (let i = 0; i < maxPredictions; i++) {
-        const classItem = labelContainer.childNodes[i];
         const className = prediction[i].className;
         const probability = (prediction[i].probability * 100).toFixed(0);
 
-        classItem.querySelector(".class-name").textContent = className;
-        classItem.querySelector(".probability").textContent = `${probability}%`;
-        classItem.querySelector(".result-bar-fill").style.width = `${probability}%`;
+        const resultItem = document.createElement("div");
+        resultItem.classList.add("result-item");
+        resultItem.innerHTML = `
+            <span style="min-width: 60px; font-weight: bold;">${className}</span>
+            <div class="bar-container">
+                <div class="bar-fill" style="width: ${probability}%"></div>
+            </div>
+            <span style="min-width: 40px; text-align: right;">${probability}%</span>
+        `;
+        labelContainer.appendChild(resultItem);
     }
+
+    startBtn.disabled = false;
+    startBtn.textContent = "다시 테스트하기";
 }
 
+// 4. 테마 토글
+const themeToggle = document.getElementById('theme-toggle');
+const html = document.documentElement;
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    themeToggle.querySelector('.mode-icon').textContent = newTheme === 'light' ? '🌙' : '☀️';
+});
+
 // Event Listeners
-document.getElementById("start-btn").addEventListener("click", init);
+document.getElementById("start-btn").addEventListener("click", predict);
+
+// 초기 모델 로드 (선택 사항: 성능을 위해 미리 로드)
+loadModel();
